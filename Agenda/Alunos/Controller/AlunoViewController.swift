@@ -8,7 +8,8 @@
 
 import UIKit
 
-class AlunoViewController: UIViewController {
+//Será necessário utilizar o protocolo criado na classe: ImagePicker
+class AlunoViewController: UIViewController, ImagePickerSelectedPhoto  {
     
     // MARK: - IBOutlets
     
@@ -23,11 +24,16 @@ class AlunoViewController: UIViewController {
     @IBOutlet weak var textFieldSite: UITextField!
     @IBOutlet weak var textFieldNota: UITextField!
     
+    
+    // MARK: - Atributos.
+    let imagePicker = ImagePicker()
+    
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.arredondaView()
+        self.setup()
         NotificationCenter.default.addObserver(self, selector: #selector(aumentarScrollView(_:)), name: .UIKeyboardWillShow, object: nil)
     }
     
@@ -36,6 +42,15 @@ class AlunoViewController: UIViewController {
     }
     
     // MARK: - Métodos
+    func setup(){
+        //Definir o delegate da classe ImagePicker.
+        imagePicker.protocolo = self
+    }
+    
+    // MARK: Delegate
+    func imagePickerSelectedPhoto(_foto: UIImage) {
+        imageAluno.image = _foto
+    }
     
     func arredondaView() {
         self.viewImagemAluno.layer.cornerRadius = self.viewImagemAluno.frame.width / 2
@@ -50,7 +65,22 @@ class AlunoViewController: UIViewController {
     // MARK: - IBActions
     
     @IBAction func buttonFoto(_ sender: UIButton) {
-        // TO DO
+        //Implementar a utilização da camera.
+        let imageCamera = UIImagePickerController()
+        
+        //Tipo de midia.
+        if (UIImagePickerController.isSourceTypeAvailable(.camera)) {
+            imageCamera.sourceType = .camera
+        } else if (UIImagePickerController.isSourceTypeAvailable(.photoLibrary)) {
+            imageCamera.sourceType = .photoLibrary
+        }
+        
+        //Delegando os métodos
+        imageCamera.delegate = imagePicker
+        
+        //Apresentar
+        self.present(imageCamera, animated: true, completion:nil)
+        
     }
     
     @IBAction func stepperNota(_ sender: UIStepper) {
