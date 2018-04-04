@@ -213,6 +213,9 @@
                                                 <state key="normal" title="salvar">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="save:" destination="ZY7-NM-Hup" eventType="touchUpInside" id="Fse-Hv-uPZ"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                     </stackView>

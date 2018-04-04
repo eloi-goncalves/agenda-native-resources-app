@@ -25,5 +25,19 @@ class HomeTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    func setupCell(_ aluno : Aluno) {
+        labelNomeDoAluno.text = aluno.nm_name
+        
+        if let img = aluno.img_photo as? UIImage {
+            imageAluno.image = img
+            roundedPhoto()
+        }
+    }
+    
+    func roundedPhoto() {
+        imageAluno.layer.cornerRadius = imageAluno.layer.bounds.width / 2
+        imageAluno.layer.masksToBounds = true
+    }
 
 }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 //Será necessário utilizar o protocolo criado na classe: ImagePicker
 class AlunoViewController: UIViewController, ImagePickerSelectedPhoto  {
@@ -25,6 +26,11 @@ class AlunoViewController: UIViewController, ImagePickerSelectedPhoto  {
     @IBOutlet weak var textFieldNota: UITextField!
     
     
+     //MARK: - Context
+    var context: NSManagedObjectContext {
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        return appDelegate.persistentContainer.viewContext
+    }
     // MARK: - Atributos.
     let imagePicker = ImagePicker()
     
@@ -85,6 +91,24 @@ class AlunoViewController: UIViewController, ImagePickerSelectedPhoto  {
     
     @IBAction func stepperNota(_ sender: UIStepper) {
         self.textFieldNota.text = "\(sender.value)"
+    }
+    
+    @IBAction func save(_ sender: UIButton) {
+        do {
+            let aluno =  Aluno(context: context)
+            aluno.ds_site  = textFieldSite.text
+            aluno.nm_name  = textFieldNome.text
+            aluno.ds_endereco = textFieldEndereco.text
+            aluno.ds_telefone = textFieldTelefone.text
+            aluno.img_photo  = imageAluno.image
+            aluno.nr_nota    = (textFieldNota.text as! NSString).doubleValue
+            
+            try context.save()
+            navigationController?.popViewController(animated: true)
+        } catch {
+            print(error.localizedDescription)
+        }
+        
     }
     
     
