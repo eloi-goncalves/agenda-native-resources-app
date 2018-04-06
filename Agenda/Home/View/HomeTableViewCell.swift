@@ -29,9 +29,12 @@ class HomeTableViewCell: UITableViewCell {
     func setupCell(_ aluno : Aluno) {
         labelNomeDoAluno.text = aluno.nm_name
         
-        if let img = aluno.img_photo as? UIImage {
-            imageAluno.image = img
-            roundedPhoto()
+        let gerenciadorDeArquivos = FileManager.default
+        let directory = NSHomeDirectory() as NSString
+        let pathImage = directory.appendingPathComponent(aluno.img_photo!)
+        
+        if !gerenciadorDeArquivos.fileExists(atPath: pathImage) {
+           imageAluno.image = UIImage(contentsOfFile: pathImage)
         }
     }
     

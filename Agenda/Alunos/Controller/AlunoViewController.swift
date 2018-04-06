@@ -33,6 +33,8 @@ class AlunoViewController: UIViewController, ImagePickerSelectedPhoto  {
     }
     // MARK: - Atributos.
     let imagePicker = ImagePicker()
+    var aluno: Aluno?
+    
     
     // MARK: - View Lifecycle
 
@@ -40,6 +42,7 @@ class AlunoViewController: UIViewController, ImagePickerSelectedPhoto  {
         super.viewDidLoad()
         self.arredondaView()
         self.setup()
+        self.carregarAluno()
         NotificationCenter.default.addObserver(self, selector: #selector(aumentarScrollView(_:)), name: .UIKeyboardWillShow, object: nil)
     }
     
@@ -51,6 +54,16 @@ class AlunoViewController: UIViewController, ImagePickerSelectedPhoto  {
     func setup(){
         //Definir o delegate da classe ImagePicker.
         imagePicker.protocolo = self
+    }
+    
+    func carregarAluno() {
+        guard let alunoCarregado =  aluno  else { return }
+            textFieldNome.text = alunoCarregado.nm_name
+            textFieldNota.text =  (alunoCarregado.nr_nota as NSNumber).stringValue
+            textFieldSite.text = alunoCarregado.ds_site
+            textFieldEndereco.text = alunoCarregado.ds_endereco
+            textFieldTelefone.text = alunoCarregado.ds_telefone
+            imageAluno.image = alunoCarregado.img_photo as? UIImage
     }
     
     // MARK: Delegate
@@ -89,20 +102,63 @@ class AlunoViewController: UIViewController, ImagePickerSelectedPhoto  {
         
     }
     
+    //MARK: CriarCaminhoImagens
+    func creatImagePath(_ photo : UIImage) -> String {
+        let caminhoSistemaArquivos = NSHomeDirectory() as NSString
+        let diretorioImagens = "Documents/Images"
+        let caminhoCompleto = caminhoSistemaArquivos.appendingPathComponent(diretorioImagens)
+        
+        let gerenciadorDeArquivos = FileManager.default
+        
+        if !gerenciadorDeArquivos.fileExists(atPath: caminhoCompleto) {
+            do {
+                try gerenciadorDeArquivos.createDirectory(atPath: caminhoCompleto, withIntermediateDirectories: false, attributes: nil)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        
+        //Criar o nome da imagem que deve ser único para armazenarmos.
+        let imageName = String(format: "%@,jpeg", aluno!.objectID.uriRepresentation().lastPathComponent)
+        
+        //Criar a url onde vai ser concatenado  caminho + nome da imagem.
+        let url = URL(fileURLWithPath: String(format: "%@/%@", caminhoCompleto, imageName));
+        
+        //Converter a imagem em data para conseguir salva-la.
+        guard let data = UIImagePNGRepresentation(photo) else { return "empty"}
+        
+        do {
+            try data.write(to: url)
+            return String(format: "%@/%@", caminhoCompleto, imageName)
+        } catch {
+            print(error.localizedDescription)
+            return "empty"
+        }
+    }
+    
     @IBAction func stepperNota(_ sender: UIStepper) {
         self.textFieldNota.text = "\(sender.value)"
     }
     
     @IBAction func save(_ sender: UIButton) {
+
+        if  self.aluno == nil {
+            self.aluno =  Aluno(context: context)
+        }
+            self.aluno?.ds_site  = textFieldSite.text
+            self.aluno?.nm_name  = textFieldNome.text
+            self.aluno?.ds_endereco = textFieldEndereco.text
+            self.aluno?.ds_telefone = textFieldTelefone.text
+            self.aluno?.nr_nota    = (textFieldNota.text as! NSString).doubleValue
+            //Tratar a foto para salvar no caminho.
+        
+        var pathImage = creatImagePath(imageAluno.image!)
+        
+        if !(pathImage == "empty") {
+            self.aluno?.img_photo  = pathImage
+        }
+        
         do {
-            let aluno =  Aluno(context: context)
-            aluno.ds_site  = textFieldSite.text
-            aluno.nm_name  = textFieldNome.text
-            aluno.ds_endereco = textFieldEndereco.text
-            aluno.ds_telefone = textFieldTelefone.text
-            aluno.img_photo  = imageAluno.image
-            aluno.nr_nota    = (textFieldNota.text as! NSString).doubleValue
-            
             try context.save()
             navigationController?.popViewController(animated: true)
         } catch {

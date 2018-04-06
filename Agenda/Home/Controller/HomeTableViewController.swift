@@ -22,7 +22,6 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
     var gerenciadorDeBuscaAlunos: NSFetchedResultsController<Aluno>?
     
     
-    
     //MARL: - getAlunos
     
     func getAlunos() {
@@ -44,16 +43,30 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
     
     //MARK: - Variáveis
     let searchController = UISearchController(searchResultsController: nil)
+    var alunoViewController:AlunoViewController?
     
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configuraSearch()
-        self.getAlunos()
+        self.getAlunos()        
     }
     
     // MARK: - Métodos
+    
+    func configureTable() {
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.none
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "edit" {
+            alunoViewController =  segue.destination as? AlunoViewController
+        } else if  (segue.identifier == "newRecord") {
+            alunoViewController =  segue.destination as? AlunoViewController
+            alunoViewController?.aluno = nil
+        }
+    }
     
     func configuraSearch() {
         self.searchController.searchBar.delegate = self
@@ -89,18 +102,38 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            //Capturar primeira o aluno que deseja que seja deletado.
+            
+            guard let aluno = gerenciadorDeBuscaAlunos?.fetchedObjects![indexPath.row] as? Aluno else { return }
+            
+            context.delete(aluno)
+            do {
+                try  context.save()
+            } catch {
+                print(error.localizedDescription)
+            }
+        
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
     
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let alunoSelecionado = gerenciadorDeBuscaAlunos?.fetchedObjects![indexPath.row] else { return  }
+        alunoViewController?.aluno = alunoSelecionado
+    }
+    
+    //MARK: FetchController
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
-        case .delete: break
-            //Implenets in the future.
+        case .delete:
+                //Implenets in the future.
+                guard let index = indexPath else { return }
+                tableView.deleteRows(at: [index], with: .fade)
+                break
         default:
-            tableView.reloadData()
+                tableView.reloadData()
         }
     }
 

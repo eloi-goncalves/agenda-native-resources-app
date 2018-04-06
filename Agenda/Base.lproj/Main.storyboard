@@ -47,6 +47,7 @@
                                 <connections>
                                     <outlet property="imageAluno" destination="I1a-iL-YQH" id="dM3-yt-b69"/>
                                     <outlet property="labelNomeDoAluno" destination="oKL-i4-VS5" id="GFr-bb-rep"/>
+                                    <segue destination="ZY7-NM-Hup" kind="show" identifier="edit" id="veP-Z6-brl"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -60,7 +61,7 @@
                         <barButtonItem key="leftBarButtonItem" systemItem="bookmarks" id="dzi-1s-s3a"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="4cp-jd-Mnv">
                             <connections>
-                                <segue destination="ZY7-NM-Hup" kind="show" id="tio-sZ-JlU"/>
+                                <segue destination="ZY7-NM-Hup" kind="show" identifier="newRecord" id="tio-sZ-JlU"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -273,4 +274,7 @@
             <point key="canvasLocation" x="-519" y="116"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="veP-Z6-brl"/>
+    </inferredMetricsTieBreakers>
 </document>
