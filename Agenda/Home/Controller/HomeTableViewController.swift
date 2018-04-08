@@ -50,7 +50,8 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configuraSearch()
-        self.getAlunos()        
+        self.getAlunos()
+        self.newBranchTest()
     }
     
     // MARK: - Métodos
@@ -59,6 +60,10 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
         if longPress.state == .began {
             print("Long Press Acionado atualizado teste de git.")
         }
+    }
+    
+    func newBranchTest() {
+        print("This is only a new BranchMethodTeste")
     }
     
     func configureTable() {
