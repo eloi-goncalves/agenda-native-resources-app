@@ -16,11 +16,11 @@ class Localizacao: NSObject {
         let conversor = CLGeocoder()
         conversor.geocodeAddressString(endereco) { (listLocalization, error) in
             if error != nil {
+                print(error?.localizedDescription)
+            } else {
                 if let localization = listLocalization?.first {
                     local(localization)
                 }
-            } else {
-                print(error?.localizedDescription)
             }
         }
     }
