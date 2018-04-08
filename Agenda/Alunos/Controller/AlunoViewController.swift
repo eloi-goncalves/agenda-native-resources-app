@@ -119,7 +119,7 @@ class AlunoViewController: UIViewController, ImagePickerSelectedPhoto  {
         }
         
         //Criar o nome da imagem que deve ser único para armazenarmos.
-        let imageName = String(format: "%@,jpeg", aluno!.objectID.uriRepresentation().lastPathComponent)
+        let imageName = String(format: "%@.png", aluno!.objectID.uriRepresentation().lastPathComponent)
         
         //Criar a url onde vai ser concatenado  caminho + nome da imagem.
         let url = URL(fileURLWithPath: String(format: "%@/%@", caminhoCompleto, imageName));
@@ -150,13 +150,14 @@ class AlunoViewController: UIViewController, ImagePickerSelectedPhoto  {
             self.aluno?.ds_endereco = textFieldEndereco.text
             self.aluno?.ds_telefone = textFieldTelefone.text
             self.aluno?.nr_nota    = (textFieldNota.text as! NSString).doubleValue
+            self.aluno?.img_photo  = imageAluno.image as? UIImage
             //Tratar a foto para salvar no caminho.
         
-        var pathImage = creatImagePath(imageAluno.image!)
-        
-        if !(pathImage == "empty") {
-            self.aluno?.img_photo  = pathImage
-        }
+           /* let pathImage = creatImagePath(imageAluno.image!)
+         
+            if !(pathImage == "empty") {
+                self.aluno?.img_photo  = pathImage
+            }*/
         
         do {
             try context.save()

@@ -25,8 +25,8 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
     //MARL: - getAlunos
     
     func getAlunos() {
-        var alunosRequest: NSFetchRequest = Aluno.fetchRequest()
-        var orderByName = NSSortDescriptor(key: "nm_name", ascending: true)
+        let alunosRequest: NSFetchRequest = Aluno.fetchRequest()
+        let orderByName = NSSortDescriptor(key: "nm_name", ascending: true)
         alunosRequest.sortDescriptors = [orderByName]
         
         gerenciadorDeBuscaAlunos =  NSFetchedResultsController(fetchRequest: alunosRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
@@ -54,6 +54,12 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
     }
     
     // MARK: - Métodos
+    
+    @objc func openActionSheet(_ longPress:UILongPressGestureRecognizer) {
+        if longPress.state == .began {
+            print("Long Press Acionado")
+        }
+    }
     
     func configureTable() {
         tableView.separatorStyle = UITableViewCellSeparatorStyle.none
@@ -91,11 +97,14 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "celula-aluno", for: indexPath) as! HomeTableViewCell
-        
         let aluno = gerenciadorDeBuscaAlunos?.fetchedObjects![indexPath.row] as! Aluno
         cell.setupCell(aluno)
 
+        //Criar o método longPress da Celula
+        let longPress = UILongPressGestureRecognizer(target:  self, action:  #selector(openActionSheet(_:)))
         
+        //Adicionar agora o longPress criado na celular.
+        cell.addGestureRecognizer(longPress)
         return cell
     }
 
