@@ -10,7 +10,7 @@ import UIKit
 
 enum MenuOptionsAlunos {
     case sms
-    
+    case ligacao
 }
 
 class MenuOpcaoAluno: NSObject {
@@ -27,8 +27,14 @@ class MenuOpcaoAluno: NSObject {
         //Option cancel
         let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
+        //Option Call
+        let call = UIAlertAction(title: "Call", style: .default) { (call) in
+            completion(.ligacao)
+        }
+        
         menu.addAction(sms)
-        menu.addAction(cancel) 
+        menu.addAction(cancel)
+        menu.addAction(call)
         return menu
     }
 }

@@ -68,6 +68,15 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
                         componentMessage.messageComposeDelegate = self.messageSMS
                         self.present(componentMessage, animated: true, completion: nil )
                     }
+                break
+                case .ligacao:
+                    guard let number = alunoSelecionado.ds_telefone else { return }
+                    //Funcionalidade de chamada.
+                    if let url = URL(string: "tel://\(number)"), UIApplication.shared.canOpenURL(url) {
+                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                    }
+                    
+                    break
                 }
             })
             self.present(menu, animated: true, completion: nil)

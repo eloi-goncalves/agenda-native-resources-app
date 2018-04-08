@@ -26,7 +26,7 @@ class Mensagem: NSObject, MFMessageComposeViewControllerDelegate {
             //Como o aluno é optional sempre devemos tratar com o guardlet.
             guard  let alunoNumberPhone = aluno.ds_telefone else {return componentMessage}
             //Definir o array de número dos alunos para enviar o SMS.
-            componentMessage.recipients = [alunoNumberPhone ]
+            componentMessage.recipients = [alunoNumberPhone]
             
             //Definir o componentMesssage como delegate.
             componentMessage.messageComposeDelegate = self 
