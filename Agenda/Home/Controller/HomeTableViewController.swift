@@ -57,7 +57,7 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
     
     @objc func openActionSheet(_ longPress:UILongPressGestureRecognizer) {
         if longPress.state == .began {
-            print("Long Press Acionado")
+            print("Long Press Acionado atualizado teste de git.")
         }
     }
     
