@@ -77,6 +77,20 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
                     }
                     
                     break
+                case .waze:
+                    
+                    if UIApplication.shared.canOpenURL(URL(string: "waze://")!) {
+                        guard let enderecoSelecionado = alunoSelecionado.ds_endereco else { return }
+                        Localizacao().converterEnderecoEmCoordenada(enderecoSelecionado, local: { (localizacaoEncontrada) in
+                           let latitude = String(describing: localizacaoEncontrada.location!.coordinate.latitude)
+                           let longitude = String(describing: localizacaoEncontrada.location!.coordinate.longitude)
+                           let url:String = "waze://?ll=\(latitude),\(longitude)&navigate=yes"
+                            
+                            UIApplication.shared.open(URL(string: url)!, options: [:], completionHandler: nil)
+                        })
+                    }
+                    
+                    break
                 }
             })
             self.present(menu, animated: true, completion: nil)
