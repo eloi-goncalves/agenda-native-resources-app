@@ -44,6 +44,7 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
     //MARK: - Variáveis
     let searchController = UISearchController(searchResultsController: nil)
     var alunoViewController:AlunoViewController?
+    var messageSMS =  Mensagem()
     
     // MARK: - View Lifecycle
 
@@ -51,19 +52,26 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
         super.viewDidLoad()
         self.configuraSearch()
         self.getAlunos()
-        self.newBranchTest()
     }
     
     // MARK: - Métodos
     
     @objc func openActionSheet(_ longPress:UILongPressGestureRecognizer) {
         if longPress.state == .began {
-            print("Long Press Acionado atualizado teste de git.")
+            //Para ter acesso ao aluno selecionado vou utulizar o gerenciador de busca de aluno e a informação de longPress tag.
+            guard let alunoSelecionado = gerenciadorDeBuscaAlunos?.fetchedObjects?[(longPress.view?.tag)!] else { return }
+            
+            let menu = MenuOpcaoAluno().configureMenuOption(completion: { (opcao) in
+                switch opcao {
+                case .sms:
+                    if let componentMessage = self.messageSMS.configureSMS(alunoSelecionado) {
+                        componentMessage.messageComposeDelegate = self.messageSMS
+                        self.present(componentMessage, animated: true, completion: nil )
+                    }
+                }
+            })
+            self.present(menu, animated: true, completion: nil)
         }
-    }
-    
-    func newBranchTest() {
-        print("This is only a new BranchMethodTeste")
     }
     
     func configureTable() {
