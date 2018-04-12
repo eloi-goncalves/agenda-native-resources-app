@@ -1,0 +1,16 @@
+{
+    "list":[
+            {
+            "aluno":[
+                     {
+                     "site":"www.yahoo.com",
+                     "endereco":"Rodovia Jorge Lacerda",
+                     "id":"1",
+                     "telefone":"47999718342",
+                     "nome":"Eloi",
+                     "nota":"8"
+                     }
+                     ]
+            }
+            ]
+}
