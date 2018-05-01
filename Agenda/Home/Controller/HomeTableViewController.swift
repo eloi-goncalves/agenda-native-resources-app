@@ -153,18 +153,26 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            // Delete the row from the data source
-            //Capturar primeira o aluno que deseja que seja deletado.
             
-            guard let aluno = gerenciadorDeBuscaAlunos?.fetchedObjects![indexPath.row] as? Aluno else { return }
-            
-            context.delete(aluno)
-            do {
-                try  context.save()
-            } catch {
-                print(error.localizedDescription)
-            }
-        
+            //Vefirica se o usuário que está tentando deletar o aluno está autenticado.
+            AutenticacaoLocal().autorizaUsuario(completion: { (autenticado) in
+                if autenticado {
+                    //Será utilizado o dispach para colocar a theard no main.
+                    DispatchQueue.main.async {
+                        // Delete the row from the data source
+                        //Capturar primeira o aluno que deseja que seja deletado.
+                        guard let aluno = self.gerenciadorDeBuscaAlunos?.fetchedObjects![indexPath.row] as? Aluno else { return }
+                        
+                        self.context.delete(aluno)
+                        do {
+                            try  self.context.save()
+                        } catch {
+                            print(error.localizedDescription)
+                        }
+                    }
+                    
+                }
+            })
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
