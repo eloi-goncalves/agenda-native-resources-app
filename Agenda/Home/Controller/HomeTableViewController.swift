@@ -23,11 +23,14 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
     
     
     //MARL: - getAlunos
-    
-    func getAlunos() {
+    func getAlunos(name:String = "") {
         let alunosRequest: NSFetchRequest = Aluno.fetchRequest()
         let orderByName = NSSortDescriptor(key: "nm_name", ascending: true)
         alunosRequest.sortDescriptors = [orderByName]
+        
+        if verifyIfUseFilter(name) {
+            alunosRequest.predicate = filtraAluno(name);
+        }
         
         gerenciadorDeBuscaAlunos =  NSFetchedResultsController(fetchRequest: alunosRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         gerenciadorDeBuscaAlunos?.delegate = self
@@ -36,6 +39,18 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
             try gerenciadorDeBuscaAlunos?.performFetch()
         } catch {
             print(error.localizedDescription)
+        }
+    }
+    
+    func filtraAluno(_ filtro:String) -> NSPredicate {
+        return NSPredicate(format: "nm_name CONTAINS %@", filtro)
+    }
+    
+    func verifyIfUseFilter(_ filtro:String) -> Bool {
+        if filtro.isEmpty {
+            return false
+        } else {
+            return true
         }
     }
     
@@ -205,6 +220,20 @@ class HomeTableViewController: UITableViewController, UISearchBarDelegate, NSFet
         }) { (error) in
             print(error.localizedDescription)
         }
+    }
+    
+    //MARK: - SearchBarDelegate (Controla os métodos do search bar).
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        //Capiturar o que foi digitato no search.
+        guard let alunoProcurado = searchBar.text else { return }
+        self.getAlunos(name: alunoProcurado)
+        self.tableView.reloadData()
+        
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.getAlunos()
+        self.tableView.reloadData()
     }
     
 }
